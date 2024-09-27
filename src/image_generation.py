@@ -10,7 +10,7 @@ pipe = create_pipe(model_name='stabilityai/stable-diffusion-xl-base-1.0',
 
 def generate_image(pipe):
     parser = argparse.ArgumentParser(description='add parser arguments')
-
+    
     parser.add_argument('-r', '-prompt', type=str, help='your prompt')
     parser.add_argument('-s', '-num_inference_steps', type=int, help='number of inference steps')
     parser.add_argument('-g', '-guidance_scale', )
