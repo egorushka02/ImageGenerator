@@ -6,7 +6,7 @@ def create_pipe(model_name: str,
     """
     create StableDiffusion generator pipeline
     """
-    device = "cuda" if torch.device.cuda.is_available else "cpu"
+    device = "cuda" if torch.cuda.is_available else "cpu"
     pipe = StableDiffusionXLPipeline.from_pretrained(
         model_name,
         custom_pipeline,

@@ -1,5 +1,5 @@
 import PIL
-from model_load import create_pipe
+
 
 def get_output(prompt: str,
              num_inference_steps: int,

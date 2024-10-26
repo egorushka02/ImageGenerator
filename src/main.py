@@ -3,6 +3,9 @@ import streamlit as st
 from model.model_load import create_pipe
 from model.inference import get_output
 
+import torch
+from diffusers import StableDiffusionXLPipeline
+
 
 st.title("AI Image generator")
 
@@ -31,10 +34,15 @@ def main_page(
             with st.container():
                 st.image(result, "your generated image")
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def main():
-    pipe = create_pipe(model_name='stabilityai/stable-diffusion-xl-base-1.0',
-                   custom_pipeline='multimodalart/sdxl_perturbed_attention_guidance')
+    # pipe = create_pipe(model_name='stabilityai/stable-diffusion-xl-base-1.0',
+    #                custom_pipeline='multimodalart/sdxl_perturbed_attention_guidance')
+    pipe = StableDiffusionXLPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0",
+    custom_pipeline="multimodalart/sdxl_perturbed_attention_guidance",
+    torch_dtype=torch.float16
+)
     data = configure_sidebar()
     main_page(**data)
 
