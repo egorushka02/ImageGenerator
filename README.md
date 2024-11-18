@@ -38,3 +38,6 @@ output = pipe(
         pag_scale=3.0,
         pag_applied_layers=['mid']
     ).images
+```
+Example of output
+![image](https://github.com/user-attachments/assets/14b856fa-968d-4f68-b13f-4bc6caf44866)
