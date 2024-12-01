@@ -37,7 +37,7 @@ def main_page(
 @st.cache_data
 def main():
     # pipe = create_pipe(model_name='stabilityai/stable-diffusion-xl-base-1.0',
-    #                custom_pipeline='multimodalart/sdxl_perturbed_attention_guidance')
+    #                custom_pipeline='multimodalart/sdxl_perturbed_attention_guidance') 
     pipe = StableDiffusionXLPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0",
     custom_pipeline="multimodalart/sdxl_perturbed_attention_guidance",
