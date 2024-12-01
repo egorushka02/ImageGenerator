@@ -1,45 +1,51 @@
 import streamlit as st
 import requests
 import base64
+from io import BytesIO
+from PIL import Image
 
+st.title('AI DRAW: Image generation app👾')
 # Initialize chat history in session state
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Display welcome message
-st.write("Welcome to the Stable Diffusion Chat! Type a prompt and click Send to generate an image.")
-
-# Display chat history
+# Display chat messages
 for message in st.session_state.chat_history:
-    if message[0] == 'user':
-        st.write(f"You: {message[1]}")
-    elif message[0] == 'bot':
-        st.image(message[1], use_column_width=True)
+    if message['role'] == 'user':
+        with st.chat_message("user"):
+            st.write(message['content'])
+    elif message['role'] == 'assistant':
+        with st.chat_message("assistant"):
+            img_bytes = base64.b64decode(message['content'])
+            st.image(img_bytes, use_column_width=True)
 
-# User input form
-with st.form(key='chat_form'):
-    user_input = st.text_input('You: ', key='input_message')
-    submitted = st.form_submit_button('Send')
+# Get user input
+user_input = st.chat_input("You:")
 
-if submitted and user_input.strip() != '':
-    # Append user message to chat history
-    st.session_state.chat_history.append(('user', user_input))
+# Process user input
+if user_input:
+    # Add user message to chat history
+    st.session_state.chat_history.append({'role': 'user', 'content': user_input})
     
-    # Send API request
-    try:
-        with st.spinner('Generating image...'):
-            response = requests.post('http://localhost:8000/predict', json={'prompt': user_input}, timeout=10)
-        
-        if response.status_code == 200:
-            img_str = response.json()['image']
-            img_bytes = base64.b64decode(img_str)
-            st.session_state.chat_history.append(('bot', img_bytes))
-        else:
-            st.write(f"API Error: {response.status_code} - {response.text}")
-    
-    except requests.exceptions.RequestException as e:
-        st.write(f"An error occurred: {e}")
+    # Send API request with a loading message
+    with st.spinner('Generating image...'):
+        try:
+            response = requests.post('https://8000-01jdhv44ydz8fptmq36pp5brmh.cloudspaces.litng.ai/predict', json={'prompt': user_input}, timeout=30)
+            response.raise_for_status()
+            img_str = response.json().get('image')
+            # Store base64 string in chat history
+            st.session_state.chat_history.append({'role': 'assistant', 'content': img_str})
+            # Remove the loading message and rerun to display the image
+            if img_str:
+                # Decode the Base64 string to bytes
+                img_bytes = base64.b64decode(img_str)
 
-# Clear chat button
-if st.button('Clear Chat'):
-    st.session_state.chat_history = []
+                # Convert bytes data to PIL Image
+                img = Image.open(BytesIO(img_bytes))
+
+                # Save the image
+                st.image(img, f"your image: {user_input}")
+        except requests.exceptions.HTTPError as http_err:
+            st.error(f'HTTP error occurred: {http_err}')  
+        except Exception as err:
+            st.error(f'An error occurred: {err}')
