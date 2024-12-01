@@ -1,51 +1,51 @@
 import streamlit as st
+import requests
+import base64
+from io import BytesIO
+from PIL import Image
 
-from model.model_load import create_pipe
-from model.inference import get_output
+st.title('AI DRAW: Image generation app👾')
+# Initialize chat history in session state
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
 
-import torch
-from diffusers import StableDiffusionXLPipeline
+# Display chat messages
+for message in st.session_state.chat_history:
+    if message['role'] == 'user':
+        with st.chat_message("user"):
+            st.write(message['content'])
+    elif message['role'] == 'assistant':
+        with st.chat_message("assistant"):
+            img_bytes = base64.b64decode(message['content'])
+            st.image(img_bytes, use_column_width=True)
 
+# Get user input
+user_input = st.chat_input("You:")
 
-st.title("AI Image generator")
-
-def configure_sidebar():
-    with st.sidebar:
-        with st.form("my_form"):
-            prompt = st.text_area("enter prompt:")
-            submitted = st.form_submitt_button("Send", type="primary")
-        return {
-            "prompt": prompt,
-            "submitted": submitted
-        }
+# Process user input
+if user_input:
+    # Add user message to chat history
+    st.session_state.chat_history.append({'role': 'user', 'content': user_input})
     
+    # Send API request with a loading message
+    with st.spinner('Generating image...'):
+        try:
+            response = requests.post('https://8000-01jdhv44ydz8fptmq36pp5brmh.cloudspaces.litng.ai/predict', json={'prompt': user_input}, timeout=30)
+            response.raise_for_status()
+            img_str = response.json().get('image')
+            # Store base64 string in chat history
+            st.session_state.chat_history.append({'role': 'assistant', 'content': img_str})
+            # Remove the loading message and rerun to display the image
+            if img_str:
+                # Decode the Base64 string to bytes
+                img_bytes = base64.b64decode(img_str)
 
-def main_page(
-        prompt: str,
-        submitted: bool,
-        pipe
-):
-    if submitted:
-        with st.spinner("in process..."):
-            result = get_output(prompt,
-                                5,
-                                4.0,
-                                0.0)
-            with st.container():
-                st.image(result, "your generated image")
+                # Convert bytes data to PIL Image
+                img = Image.open(BytesIO(img_bytes))
 
-@st.cache_data
-def main():
-    # pipe = create_pipe(model_name='stabilityai/stable-diffusion-xl-base-1.0',
-    #                custom_pipeline='multimodalart/sdxl_perturbed_attention_guidance') 
-    pipe = StableDiffusionXLPipeline.from_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0",
-    custom_pipeline="multimodalart/sdxl_perturbed_attention_guidance",
-    torch_dtype=torch.float16
-)
-    data = configure_sidebar()
-    main_page(**data)
-
-if __name__ == "__main__":
-    main()
-    
+                # Save the image
+                st.image(img, f"your image: {user_input}")
+        except requests.exceptions.HTTPError as http_err:
+            st.error(f'HTTP error occurred: {http_err}')  
+        except Exception as err:
+            st.error(f'An error occurred: {err}')
