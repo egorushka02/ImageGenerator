@@ -1,76 +1,77 @@
-# Perturbed-Attention Guidance (PAG) Image Generation App
+# AI-Powered Image Generation Chat App
 
-## Overview
+## Introduction
 
-This repository contains the implementation of an image generation application that leverages the **Perturbed-Attention Guidance (PAG)** technique, as described in the paper ["Self-Rectifying Diffusion Sampling with Perturbed-Attention Guidance"](https://arxiv.org/abs/2403.17377). The app is designed to generate high-quality images using diffusion models, enhancing the sample quality across both unconditional and conditional settings without requiring additional training or external modules.
+This project presents an AI-powered image generation app with a chat interface, leveraging the power of Stable Diffusion and Streamlit. Users can input prompts, generate images, and view them within a chat window, creating an interactive and intuitive experience.
 
 ## Features
 
-- **High-Quality Image Generation**: Utilizes PAG to improve the quality of generated images, even in unconditional settings.
-- **Versatile Guidance**: Applicable to various downstream tasks such as image restoration, ControlNet with empty prompts, and more.
-- **No Additional Training Required**: PAG operates without the need for additional training or external modules, making it efficient and easy to integrate.
-- **User-Friendly Interface**: Provides a simple and intuitive interface for users to generate images with customizable settings.
+- **Chat-based Interface**: Generate images by entering prompts in a chat-like interface.
+- **Real-time Image Generation**: Instantly see the images generated based on your prompts.
+- **Clear Chat History**: Easily reset the conversation with a single button click.
+
+## Prerequisites
+
+- Python 3.8 or higher
+- Streamlit
+- Requests library
+- Stable Diffusion API server running separately
 
 ## Installation
 
-To set up the environment and install the necessary dependencies, follow these steps:
+1. **Clone the Repository**
 
-1. **Clone the Repository**:
    ```bash
-   https://github.com/egorushka02/ImageGenerator.git
-   cd ImageGenerator
+   git clone https://github.com/yourusername/ai-image-chat-app.git
+   cd ai-image-chat-app
    ```
 
-2. **Create a Virtual Environment** (optional but recommended):
+2. **Install Dependencies**
+
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   pip install streamlit requests
    ```
 
-3. **Install Dependencies**:
+3. **Start the Stable Diffusion API Server**
+
+   Ensure the Stable Diffusion API server is running as per its documentation.
+
+4. **Run the Streamlit App**
+
    ```bash
-   pip install -r requirements.txt
+   streamlit run src/main.py
    ```
 
 ## Usage
 
-### Running the Application
+1. **Start the API Server**
 
-To start the image generation application, run the following command:
+   Make sure the Stable Diffusion API server is up and running.
 
-```bash
-python src/main.py
-```
+2. **Interact with the App**
 
-### Customizing Settings
+   - Enter a prompt in the chat input field.
+   - Click "Send" to generate an image.
+   - View the generated image in the chat window.
+   - Use the "Clear Chat" button to reset the conversation.
 
-The application allows users to customize various settings such as:
+## How it Works
 
-- **Guidance Scale**: Adjust the strength of the PAG guidance.
-- **Sampling Steps**: Define the number of steps for the diffusion process.
-- **Conditional Settings**: Specify conditions such as class labels or text prompts for conditional generation.
-
-### Example Commands
-
-Here are some example commands to generate images with different settings:
-
-- **Unconditional Generation**:
-  ```bash
-  python src/main.py
-  ```
-
-## Results
-
-The application generates high-quality images that demonstrate the effectiveness of PAG in improving sample quality. You can find example generated images in the `results` directory.
+- **User Input**: Users input a prompt via Streamlit's chat input.
+- **API Request**: The app sends the prompt to the Stable Diffusion API.
+- **Image Generation**: The API generates an image and returns it as a Base64 string.
+- **Display Image**: The app decodes the string and displays the image in the chat.
 
 ## Contributing
 
-We welcome contributions to improve and extend this application. If you would like to contribute, please follow these steps:
+Contributions are welcome! Please open an issue or submit a pull request.
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes and commit them (`git commit -am 'Add some feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a new Pull Request.
+## License
 
-Happy image generating! 🎨
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- **Streamlit**: For creating the interactive web interface.
+- **Stable Diffusion**: For the powerful image generation model.
+- **Contributors**: Special thanks to all contributors who have helped improve this project.
