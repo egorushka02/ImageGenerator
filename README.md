@@ -22,8 +22,8 @@ This project presents an AI-powered image generation app with a chat interface, 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/ai-image-chat-app.git
-   cd ai-image-chat-app
+   https://github.com/egorushka02/ImageGenerator.git
+   cd ImageGenerator
    ```
 
 2. **Install Dependencies**
