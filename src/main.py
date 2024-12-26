@@ -4,7 +4,7 @@ import base64
 from io import BytesIO
 from PIL import Image
 
-st.title('AI DRAW: Image generation app👾')
+st.title('Generation')
 # Initialize chat history in session state
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
